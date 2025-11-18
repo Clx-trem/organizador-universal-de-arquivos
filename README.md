@@ -1,240 +1,148 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Completo CLX</title>
 <style>
-body{
-  background:#0d1117;
-  font-family:Arial;
-  color:white;
-  margin:0;
-  padding:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
-.card{
-  background:#161b22;
-  padding:30px;
-  width:350px;
-  border-radius:15px;
-  box-shadow:0 0 15px #00aaff;
-}
-input,button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border-radius:8px;
-  border:none;
-  outline:none;
-  font-size:16px;
-}
-button{
-  background:#00aaff;
-  color:white;
-  cursor:pointer;
-}
-button:hover{ background:#0088cc; }
-a{ color:#00aaff; text-decoration:none; }
-a:hover{ text-decoration:underline; }
-h2{text-align:center;}
+ body{font-family:Arial;background:#0d1117;color:#fff;margin:0;padding:0}
+ .box{max-width:420px;margin:40px auto;background:#161b22;padding:20px;border-radius:10px}
+ input,select,button{width:100%;padding:10px;margin:8px 0;border:none;border-radius:6px}
+ button{background:#238636;color:#fff;font-weight:bold;cursor:pointer}
+ button:hover{opacity:.8}
+ .link{color:#58a6ff;cursor:pointer;text-decoration:underline;text-align:center}
+ .hidden{display:none}
+ table{width:100%;border-collapse:collapse;margin-top:20px}
+ td,th{border:1px solid #333;padding:8px;text-align:left}
 </style>
-";
+</head>
+<body>
 
-/* ================================
-   📌 TELA DE LOGIN
-================================ */
-if($page == "login"){
-    $msg = "";
+<div id="login" class="box">
+ <h2>Login</h2>
+ <input id="loginEmail" placeholder="Email">
+ <input id="loginSenha" placeholder="Senha" type="password">
+ <button onclick="logar()">Entrar</button>
+ <p class="link" onclick="show('cadastro')">Criar conta</p>
+ <p class="link" onclick="show('recuperar')">Esqueci a senha</p>
+</div>
 
-    if(isset($_POST["email"])){
-        $email = $_POST["email"];
-        $senha = $_POST["senha"];
+<div id="cadastro" class="box hidden">
+ <h2>Criar Conta</h2>
+ <input id="cadNome" placeholder="Nome">
+ <input id="cadEmail" placeholder="Email">
+ <input id="cadSenha" placeholder="Senha" type="password">
+ <select id="cadTipo">
+   <option value="user">Usuário</option>
+   <option value="admin">Administrador</option>
+ </select>
+ <button onclick="criarConta()">Cadastrar</button>
+ <p class="link" onclick="show('login')">Voltar</p>
+</div>
 
-        $sql = $pdo->prepare("SELECT * FROM usuarios WHERE email=?");
-        $sql->execute([$email]);
-        $user = $sql->fetch();
+<div id="recuperar" class="box hidden">
+ <h2>Recuperar Senha</h2>
+ <input id="recEmail" placeholder="Digite seu email">
+ <button onclick="recSenha()">Enviar</button>
+ <p class="link" onclick="show('login')">Voltar</p>
+</div>
 
-        if($user && password_verify($senha,$user["senha"])){
-            $_SESSION["user"] = $user;
-            header("Location: index.php?p=painel");
-            exit;
-        } else {
-            $msg = "Email ou senha incorretos!";
-        }
-    }
+<div id="painel" class="box hidden">
+ <h2 id="tituloPainel">Painel</h2>
+ <button onclick="show('cadColab')">Cadastrar Colaborador</button>
+ <button onclick="show('lista')">Lista de Colaboradores</button>
+ <button onclick="logout()">Sair</button>
+</div>
 
-    echo "
-    <div class='card'>
-        <h2>Login</h2>
-        <form method='post'>
-            <input type='email' name='email' placeholder='Email' required>
-            <input type='password' name='senha' placeholder='Senha' required>
-            <button>Entrar</button>
-        </form>
-        <p>$msg</p>
-        <a href='?p=cadastrar'>Criar conta</a><br>
-        <a href='?p=recuperar'>Esqueci a senha</a>
-    </div>
-    ";
-    exit;
+<div id="cadColab" class="box hidden">
+ <h2>Cadastrar Colaborador</h2>
+ <input id="colabNome" placeholder="Nome">
+ <input id="colabCargo" placeholder="Cargo">
+ <button onclick="salvarColab()">Salvar</button>
+ <p class="link" onclick="show('painel')">Voltar</p>
+</div>
+
+<div id="lista" class="box hidden">
+ <h2>Colaboradores</h2>
+ <table id="tabela"></table>
+ <p class="link" onclick="show('painel')">Voltar</p>
+</div>
+
+<script>
+let usuarios = JSON.parse(localStorage.getItem('usuarios')||'[]');
+let logado = JSON.parse(localStorage.getItem('logado')||'null');
+let colaboradores = JSON.parse(localStorage.getItem('colabs')||'[]');
+
+function show(x){
+ document.querySelectorAll('.box').forEach(e=>e.classList.add('hidden'));
+ document.getElementById(x).classList.remove('hidden');
 }
 
-/* ================================
-   📌 CADASTRAR
-================================ */
-if($page == "cadastrar"){
-    $msg = "";
-    if(isset($_POST["email"])){
-        try{
-            $nome = $_POST["nome"];
-            $email = $_POST["email"];
-            $senha = password_hash($_POST["senha"],PASSWORD_DEFAULT);
+if(logado) abrirPainel();
 
-            $sql = $pdo->prepare("INSERT INTO usuarios (nome,email,senha) VALUES (?,?,?)");
-            $sql->execute([$nome,$email,$senha]);
-
-            header("Location: index.php?p=login");
-            exit;
-        } catch(Exception $e){
-            $msg = "Email já cadastrado!";
-        }
-    }
-
-    echo "
-    <div class='card'>
-        <h2>Criar Conta</h2>
-        <form method='post'>
-            <input name='nome' placeholder='Nome' required>
-            <input name='email' type='email' placeholder='Email' required>
-            <input name='senha' type='password' placeholder='Senha' required>
-            <button>Cadastrar</button>
-        </form>
-        <p>$msg</p>
-        <a href='?p=login'>Voltar</a>
-    </div>
-    ";
-    exit;
+function salvarLS(){
+ localStorage.setItem('usuarios',JSON.stringify(usuarios));
+ localStorage.setItem('logado',JSON.stringify(logado));
+ localStorage.setItem('colabs',JSON.stringify(colaboradores));
 }
 
-/* ================================
-   📌 RECUPERAR SENHA
-================================ */
-if($page == "recuperar"){
-    $msg = "";
-
-    if(isset($_POST["email"])){
-        $email = $_POST["email"];
-        $token = md5(uniqid());
-
-        $sql = $pdo->prepare("UPDATE usuarios SET token=? WHERE email=?");
-        $sql->execute([$token,$email]);
-
-        $msg = "Link de recuperação:<br>
-        <b>http://localhost/index.php?p=reset&token=$token</b>";
-    }
-
-    echo "
-    <div class='card'>
-        <h2>Recuperar Senha</h2>
-        <form method='post'>
-            <input type='email' name='email' placeholder='Seu email' required>
-            <button>Enviar link</button>
-        </form>
-        <p>$msg</p>
-        <a href='?p=login'>Voltar</a>
-    </div>
-    ";
-    exit;
+function criarConta(){
+ let nome= cadNome.value;
+ let email= cadEmail.value;
+ let senha= cadSenha.value;
+ let tipo= cadTipo.value;
+ if(!nome||!email||!senha) return alert('Preencha tudo');
+ if(usuarios.find(u=>u.email===email)) return alert('Email já existe');
+ usuarios.push({nome,email,senha,tipo});
+ salvarLS();
+ alert('Conta criada');
+ show('login');
 }
 
-/* ================================
-   📌 RESETAR SENHA
-================================ */
-if($page == "reset"){
-    $token = $_GET["token"];
-
-    if(isset($_POST["senha"])){
-        $senha = password_hash($_POST["senha"],PASSWORD_DEFAULT);
-
-        $sql = $pdo->prepare("UPDATE usuarios SET senha=?, token=NULL WHERE token=?");
-        $sql->execute([$senha,$token]);
-
-        header("Location: index.php?p=login");
-        exit;
-    }
-
-    echo "
-    <div class='card'>
-        <h2>Nova Senha</h2>
-        <form method='post'>
-            <input type='password' name='senha' placeholder='Nova senha' required>
-            <button>Salvar</button>
-        </form>
-    </div>
-    ";
-    exit;
+function logar(){
+ let email= loginEmail.value;
+ let senha= loginSenha.value;
+ let u= usuarios.find(x=>x.email===email && x.senha===senha);
+ if(!u) return alert('Login inválido');
+ logado=u;
+ salvarLS();
+ abrirPainel();
 }
 
-/* ================================
-   📌 PAINEL DO USUÁRIO
-================================ */
-if($page == "painel"){
-    if(!isset($_SESSION["user"])){
-        header("Location: index.php?p=login");
-        exit;
-    }
-
-    $u = $_SESSION["user"];
-
-    echo "
-    <div class='card'>
-        <h2>Bem-vindo, {$u["nome"]}</h2>
-    ";
-
-    if($u["tipo"] == "admin"){
-        echo "<a href='?p=admin'>Painel Admin</a><br>";
-    }
-
-    echo "
-        <a href='?p=logout'>Sair</a>
-    </div>
-    ";
-    exit;
+function abrirPainel(){
+ tituloPainel.innerText = logado.tipo==='admin' ? 'Painel do Administrador' : 'Painel do Usuário';
+ show('painel');
 }
 
-/* ================================
-   📌 PAINEL ADMIN
-================================ */
-if($page == "admin"){
-    if(!isset($_SESSION["user"]) || $_SESSION["user"]["tipo"] != "admin"){
-        header("Location: index.php?p=login");
-        exit;
-    }
+function logout(){ logado=null; salvarLS(); show('login'); }
 
-    $usuarios = $pdo->query("SELECT * FROM usuarios ORDER BY id DESC")->fetchAll();
-
-    echo "<div class='card'><h2>Painel Admin</h2>";
-
-    foreach($usuarios as $u){
-        echo "
-        <p>
-        <b>ID:</b> {$u['id']}<br>
-        <b>Nome:</b> {$u['nome']}<br>
-        <b>Email:</b> {$u['email']}<br>
-        <b>Tipo:</b> {$u['tipo']}<br>
-        </p><hr>
-        ";
-    }
-
-    echo "<a href='?p=painel'>Voltar</a></div>";
-    exit;
+function recSenha(){
+ let email= recEmail.value;
+ let u= usuarios.find(x=>x.email===email);
+ if(!u) return alert('Email não cadastrado');
+ alert('Senha: '+u.senha);
+ show('login');
 }
 
-/* ================================
-   📌 LOGOUT
-================================ */
-if($page == "logout"){
-    session_destroy();
-    header("Location: index.php?p=login");
-    exit;
+function salvarColab(){
+ let nome= colabNome.value;
+ let cargo= colabCargo.value;
+ if(!nome||!cargo) return alert('Preencha tudo');
+ colaboradores.push({nome,cargo});
+ salvarLS();
+ alert('Colaborador salvo');
+ show('painel');
 }
-?>
+
+function carregar(){
+ let t= '<tr><th>Nome</th><th>Cargo</th></tr>';
+ colaboradores.forEach(c=>{
+   t+=`<tr><td>${c.nome}</td><td>${c.cargo}</td></tr>`;
+ });
+ tabela.innerHTML=t;
+}
+
+show('login');
+</script>
+</body>
+</html>
