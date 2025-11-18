@@ -71,9 +71,6 @@
 </script>
 </body>
 </html>
-
-
-
 <!-- COLOQUE ESTE ARQUIVO COMO index.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
