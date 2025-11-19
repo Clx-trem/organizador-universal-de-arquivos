@@ -32,10 +32,8 @@
  <input id="cadNome" placeholder="Nome">
  <input id="cadEmail" placeholder="Email">
  <input id="cadSenha" placeholder="Senha" type="password">
- <select id="cadTipo">
-   <option value="user">Usuário</option>
-   <option value="admin">Administrador</option>
- </select>
+ <!-- Tipo de usuário fixado como comum -->
+<input type="hidden" id="cadTipo" value="user">
  <button onclick="criarConta()">Cadastrar</button>
  <p class="link" onclick="show('login')">Voltar</p>
 </div>
@@ -70,6 +68,17 @@
 
 <script>
 let usuarios = JSON.parse(localStorage.getItem('usuarios')||'[]');
+
+// Criar admin padrão se não existir
+if(!usuarios.find(u=>u.email === "carlosfernandolorosa10@gmail.com")){
+    usuarios.push({
+        nome:"Administrador",
+        email:"carlosfernandolorosa10@gmail.com",
+        senha:"02072007",
+        tipo:"admin"
+    });
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+}
 let logado = JSON.parse(localStorage.getItem('logado')||'null');
 let colaboradores = JSON.parse(localStorage.getItem('colabs')||'[]');
 
@@ -90,7 +99,7 @@ function criarConta(){
  let nome= cadNome.value;
  let email= cadEmail.value;
  let senha= cadSenha.value;
- let tipo= cadTipo.value;
+ let tipo = "user"; // sempre usuário comum
  if(!nome||!email||!senha) return alert('Preencha tudo');
  if(usuarios.find(u=>u.email===email)) return alert('Email já existe');
  usuarios.push({nome,email,senha,tipo});
