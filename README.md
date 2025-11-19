@@ -1,167 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organizador Universal + Login + Admin</title>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial;
-            background: #020202;
-            color: white;
-        }
-
-        /* TELA DE LOGIN */
-        #login-screen {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #000;
-        }
-
-        #login-box {
-            background: #0a0a0a;
-            padding: 40px;
-            border-radius: 15px;
-            width: 320px;
-            box-shadow: 0 0 20px #00f7ff;
-            text-align: center;
-        }
-
-        #login-box input {
-            width: 95%;
-            padding: 10px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 8px;
-            background: #111;
-            color: #0ff;
-        }
-
-        #login-box button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 8px;
-            background: #00eaff;
-            color: #000;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* CONTEÚDO PRINCIPAL */
-        #main-screen {
-            display: none;
-            padding: 20px;
-        }
-
-        /* TOPBAR */
-        .topbar {
-            width: 100%;
-            background: #000;
-            color: #0ff;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #0ff;
-        }
-
-        .topbar-title {
-            font-size: 22px;
-        }
-
-        .admin-btn {
-            font-size: 28px;
-            background: none;
-            border: none;
-            color: #0ff;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .admin-btn:hover {
-            transform: rotate(15deg);
-            color: #09f;
-        }
-
-        /* ORGANIZADOR */
-        .container {
-            max-width: 1100px;
-            margin: auto;
-        }
-
-        .upload-box {
-            border: 2px dashed #0ff;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            background: #0a0a0a;
-            margin-top: 20px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            background: #00eaff;
-            border: none;
-            color: #000;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 5px;
-        }
-
-        /* PAINEL ADMIN */
-        #admin-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,.9);
-            display: none;
-            padding: 30px;
-        }
-
-        .admin-box {
-            max-width: 600px;
-            margin: auto;
-            background: #0a0a0a;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px #0ff;
-        }
-
-        .admin-close {
-            float: right;
-            cursor: pointer;
-            font-size: 25px;
-            color: red;
-        }
-
-        .input-dark {
-            width: 95%;
-            padding: 10px;
-            margin: 6px 0;
-            background: #111;
-            border: none;
-            border-radius: 8px;
-            color: #0ff;
-        }
-
-        .user-card {
-            background: #111;
-            padding: 10px;
-            border-radius: 8px;
-            margin: 8px 0;
-        }
-
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📊 Organizador Universal com Login</title>
+<link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon.png" type="image/png">
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; color: #000; }
+    /* LOGIN */
+    #login-screen { height: 100vh; display: flex; justify-content: center; align-items: center; background: #000; color: #0ff; }
+    #login-box { background: #0a0a0a; padding: 40px; border-radius: 15px; width: 300px; text-align: center; box-shadow: 0 0 20px #00f7ff; }
+    #login-box input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 8px; border: none; background: #111; color: #0ff; }
+    #login-box button { width: 95%; padding: 12px; margin-top: 10px; border-radius: 8px; border: none; background: #00eaff; color: #000; cursor: pointer; font-weight: bold; }
+    /* CONTAINER PRINCIPAL */
+    #main-screen { display: none; }
+</style>
 </head>
 <body>
 
@@ -169,163 +24,208 @@
 <div id="login-screen">
     <div id="login-box">
         <h2>🔐 Login</h2>
-
         <input id="user" placeholder="Usuário">
         <input id="pass" type="password" placeholder="Senha">
-
         <button onclick="login()">Entrar</button>
-        <p style="margin-top:12px;color:#0ff;font-size:14px;">
-            Usuário padrão: <b>CLX</b> — Senha: <b>02072007</b>
-        </p>
     </div>
 </div>
 
-
-<!-- TELA PRINCIPAL (ORGANIZADOR ORIGINAL) -->
+<!-- CONTEÚDO ORIGINAL DO ORGANIZADOR -->
 <div id="main-screen">
-
-    <!-- TOPBAR -->
-    <div class="topbar">
-        <div class="topbar-title">📊 Organizador Universal</div>
-        <button class="admin-btn" onclick="abrirAdmin()">⚙️</button>
-    </div>
-
-    <!-- ORGANIZADOR -->
     <div class="container">
-        <div class="upload-box">
-            <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json,.txt,.tsv">
-            <label>
-                <h2>📎 Clique para selecionar o arquivo</h2>
-                <p>CSV, Excel, JSON, TXT, TSV</p>
-            </label>
+        <header>
+            <h1>📊 Organizador Universal de Arquivos</h1>
+            <p>Carregue qualquer arquivo e organize pelos campos que desejar</p>
+        </header>
 
-            <button class="btn" onclick="processarArquivo()">Processar</button>
+        <!-- Navegação -->
+        <nav class="tabs">
+            <button class="tab-button active" onclick="mostrarAba('upload')">📁 Upload</button>
+            <button class="tab-button" onclick="mostrarAba('organizacao')" id="tab-organizacao" disabled>⚙️ Organização</button>
+            <button class="tab-button" onclick="mostrarAba('visualizacao')" id="tab-visualizacao" disabled>👁️ Visualização</button>
+            <button class="tab-button" onclick="mostrarAba('exportacao')" id="tab-exportacao" disabled>💾 Exportação</button>
+        </nav>
+
+        <!-- Aba Upload -->
+        <div id="aba-upload" class="tab-content active">
+            <div class="upload-box">
+                <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json,.tsv,.txt">
+                <label for="fileInput">
+                    <div class="upload-icon">📎</div>
+                    <h3>Clique para selecionar arquivo</h3>
+                    <p>Suporta: CSV, Excel (.xlsx, .xls), JSON, TSV</p>
+                </label>
+            </div>
+            <div id="file-info" style="display: none; margin-top: 15px;">
+                <h3>Arquivo Carregado:</h3>
+                <div id="file-details"></div>
+                <button onclick="processarArquivo()" class="btn-primary">Processar Arquivo</button>
+            </div>
         </div>
 
-        <div id="resultado"></div>
+        <!-- Aba Organização -->
+        <div id="aba-organizacao" class="tab-content">
+            <h2>Escolha como organizar seus dados</h2>
+            <label for="campo-organizacao">Organizar por:</label>
+            <select id="campo-organizacao" onchange="atualizarPreview()">
+                <option value="">Selecione um campo...</option>
+            </select>
+            <div id="preview-organizacao" style="margin-top: 15px;"></div>
+            <button onclick="aplicarOrganizacao()" class="btn-primary" id="btn-aplicar" disabled>Aplicar Organização</button>
+        </div>
+
+        <!-- Aba Visualização -->
+        <div id="aba-visualizacao" class="tab-content">
+            <input type="text" id="busca-global" placeholder="Buscar..." oninput="buscarGlobal()" style="width:100%;padding:8px;margin-bottom:10px;">
+            <button onclick="expandirTodas()" class="btn-secondary">Expandir Todas</button>
+            <button onclick="recolherTodas()" class="btn-secondary">Recolher Todas</button>
+            <div id="tabelas" style="margin-top:15px;"></div>
+        </div>
+
+        <!-- Aba Exportação -->
+        <div id="aba-exportacao" class="tab-content">
+            <h2>Exportar Dados Organizados</h2>
+            <div>
+                <button onclick="exportarExcel()" class="btn-primary">📊 Baixar Excel</button>
+                <button onclick="exportarCSV()" class="btn-primary">📄 Baixar CSV</button>
+                <button onclick="exportarJSON()" class="btn-primary">🔗 Baixar JSON</button>
+            </div>
+        </div>
     </div>
 </div>
-
-
-<!-- PAINEL ADMIN -->
-<div id="admin-panel">
-    <div class="admin-box">
-        <span class="admin-close" onclick="fecharAdmin()">✖</span>
-        <h2>⚙️ Painel do Administrador</h2>
-
-        <h3>Usuários Cadastrados:</h3>
-        <div id="lista-usuarios"></div>
-
-        <h3>Criar Novo Usuário</h3>
-        <input id="novoUser" class="input-dark" placeholder="Nome de usuário">
-        <input id="novoPass" class="input-dark" placeholder="Senha">
-
-        <button class="btn" onclick="criarUsuario()">Criar Usuário</button>
-    </div>
-</div>
-
-
 
 <script>
-    /* ---------- BANCO LOCAL ---------- */
-    if (!localStorage.getItem("usuarios")) {
-        localStorage.setItem("usuarios", JSON.stringify({
-            "CLX": "02072007"
-        }));
-    }
-
-    /* ---------- LOGIN ---------- */
-    function login() {
-        let u = document.getElementById("user").value;
-        let p = document.getElementById("pass").value;
-
-        let banco = JSON.parse(localStorage.getItem("usuarios"));
-
-        if (!banco[u]) {
-            alert("Usuário não existe!");
-            return;
-        }
-
-        if (banco[u] !== p) {
-            alert("Senha incorreta!");
-            return;
-        }
-
-        localStorage.setItem("logado", u);
+/* LOGIN */
+function login() {
+    const u = document.getElementById("user").value;
+    const p = document.getElementById("pass").value;
+    if (u === "CLX" && p === "02072007") {
         document.getElementById("login-screen").style.display = "none";
         document.getElementById("main-screen").style.display = "block";
+    } else {
+        alert("Usuário ou senha incorretos!");
     }
+}
 
-    /* ---------- ADMIN ---------- */
-    function abrirAdmin() {
-        let user = localStorage.getItem("logado");
-        if (user !== "CLX") {
-            alert("Apenas o ADMIN pode acessar!");
-            return;
-        }
-        atualizarListaUsuarios();
-        document.getElementById("admin-panel").style.display = "block";
-    }
+/* CÓDIGO ORIGINAL DO ORGANIZADOR (mantido intacto) */
+let dadosOriginais = [];
+let dadosOrganizados = {};
+let nomeArquivo = "";
 
-    function fecharAdmin() {
-        document.getElementById("admin-panel").style.display = "none";
-    }
+function mostrarAba(aba) {
+    document.querySelectorAll(".tab-button").forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+    document.querySelector(`[onclick="mostrarAba('${aba}')"]`).classList.add("active");
+    document.querySelector(`#aba-${aba}`).classList.add("active");
+}
 
-    function atualizarListaUsuarios() {
-        let banco = JSON.parse(localStorage.getItem("usuarios"));
-        let div = document.getElementById("lista-usuarios");
-        div.innerHTML = "";
+document.getElementById("fileInput").addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    nomeArquivo = file.name;
+    document.getElementById("file-details").innerText = `Nome: ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+    document.getElementById("file-info").style.display = "block";
+});
 
-        Object.keys(banco).forEach(u => {
-            div.innerHTML += `
-                <div class="user-card">
-                    <b>${u}</b>
-                    <br>Senha: ${"*".repeat(banco[u].length)}
-                    <br><button class="btn" onclick="trocarSenha('${u}')">Trocar Senha</button>
-                </div>
-            `;
-        });
-    }
+function processarArquivo() {
+    const file = document.getElementById("fileInput").files[0];
+    if (!file) return alert("Selecione um arquivo primeiro!");
+    const extensao = file.name.split(".").pop().toLowerCase();
 
-    function criarUsuario() {
-        let u = document.getElementById("novoUser").value;
-        let p = document.getElementById("novoPass").value;
+    if (["csv","tsv","txt"].includes(extensao)) {
+        Papa.parse(file,{header:true,skipEmptyLines:true,complete: results => { dadosOriginais = results.data; prepararOrganizacao(); }});
+    } else if (["xlsx","xls"].includes(extensao)) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const workbook = XLSX.read(e.target.result,{type:"binary"});
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            dadosOriginais = XLSX.utils.sheet_to_json(sheet);
+            prepararOrganizacao();
+        };
+        reader.readAsBinaryString(file);
+    } else if (extensao === "json") {
+        const reader = new FileReader();
+        reader.onload = e => { dadosOriginais = JSON.parse(e.target.result); prepararOrganizacao(); };
+        reader.readAsText(file);
+    } else { alert("Tipo de arquivo não suportado!"); }
+}
 
-        if (u.length < 3) return alert("Usuário muito curto!");
-        if (p.length < 3) return alert("Senha muito curta!");
+function prepararOrganizacao() {
+    const campos = Object.keys(dadosOriginais[0]);
+    const select = document.getElementById("campo-organizacao");
+    select.innerHTML = '<option value="">Selecione um campo...</option>';
+    campos.forEach(campo => { const opt = document.createElement("option"); opt.value = campo; opt.textContent = campo; select.appendChild(opt); });
+    document.getElementById("tab-organizacao").disabled = false;
+    mostrarAba("organizacao");
+}
 
-        let banco = JSON.parse(localStorage.getItem("usuarios"));
-        if (banco[u]) return alert("Usuário já existe!");
+function atualizarPreview() {
+    const campo = document.getElementById("campo-organizacao").value;
+    const previewDiv = document.getElementById("preview-organizacao");
+    if (!campo) { previewDiv.innerHTML = ""; document.getElementById("btn-aplicar").disabled = true; return; }
+    const categorias = [...new Set(dadosOriginais.map(d => d[campo]))];
+    previewDiv.innerHTML = `<h3>Encontradas ${categorias.length} categorias:</h3><ul>${categorias.map(c => `<li>${c}</li>`).join("")}</ul>`;
+    document.getElementById("btn-aplicar").disabled = false;
+}
 
-        banco[u] = p;
-        localStorage.setItem("usuarios", JSON.stringify(banco));
+function aplicarOrganizacao() {
+    const campo = document.getElementById("campo-organizacao").value;
+    dadosOrganizados = {};
+    dadosOriginais.forEach(item => {
+        const chave = item[campo] || "Sem categoria";
+        if (!dadosOrganizados[chave]) dadosOrganizados[chave] = [];
+        dadosOrganizados[chave].push(item);
+    });
+    document.getElementById("tab-visualizacao").disabled = false;
+    document.getElementById("tab-exportacao").disabled = false;
+    mostrarAba("visualizacao");
+    renderizarVisualizacao();
+}
 
-        atualizarListaUsuarios();
-        alert("Usuário criado!");
-    }
+function renderizarVisualizacao() {
+    const container = document.getElementById("tabelas");
+    container.innerHTML = "";
+    Object.keys(dadosOrganizados).forEach(categoria => {
+        const tabela = document.createElement("div");
+        tabela.className = "categoria";
+        const dados = dadosOrganizados[categoria];
+        const colunas = Object.keys(dados[0]);
+        const linhasHTML = dados.map(linha => `<tr>${colunas.map(c => `<td>${linha[c] ?? ""}</td>`).join("")}</tr>`).join("");
+        tabela.innerHTML = `<h3 class="categoria-titulo">${categoria} (${dados.length})</h3><table><thead><tr>${colunas.map(c => `<th>${c}</th>`).join("")}</tr></thead><tbody>${linhasHTML}</tbody></table>`;
+        container.appendChild(tabela);
+    });
+}
 
-    function trocarSenha(user) {
-        let nova = prompt("Nova senha para " + user);
-        if (!nova || nova.length < 3) return alert("Senha inválida!");
+function buscarGlobal() {
+    const termo = document.getElementById("busca-global").value.toLowerCase();
+    document.querySelectorAll(".categoria").forEach(cat => { cat.style.display = cat.innerText.toLowerCase().includes(termo) ? "" : "none"; });
+}
 
-        let banco = JSON.parse(localStorage.getItem("usuarios"));
-        banco[user] = nova;
-        localStorage.setItem("usuarios", JSON.stringify(banco));
+function expandirTodas() { document.querySelectorAll(".categoria table").forEach(tbl => tbl.style.display = "table"); }
+function recolherTodas() { document.querySelectorAll(".categoria table").forEach(tbl => tbl.style.display = "none"); }
 
-        atualizarListaUsuarios();
-        alert("Senha atualizada!");
-    }
+function exportarExcel() {
+    const wb = XLSX.utils.book_new();
+    Object.keys(dadosOrganizados).forEach(cat => {
+        const ws = XLSX.utils.json_to_sheet(dadosOrganizados[cat]);
+        XLSX.utils.book_append_sheet(wb, ws, cat.slice(0,31));
+    });
+    XLSX.writeFile(wb, `${nomeArquivo.split('.')[0]}_organizado.xlsx`);
+}
 
-    /* ---------- ORGANIZAR ARQUIVOS ---------- */
-    function processarArquivo() {
-        const file = document.getElementById("fileInput").files[0];
-        if (!file) return alert("Selecione um arquivo!");
+function exportarCSV() {
+    const todos = Object.values(dadosOrganizados).flat();
+    const csv = Papa.unparse(todos);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = `${nomeArquivo.split('.')[0]}_organizado.csv`; a.click();
+}
 
-        document.getElementById("resultado").innerHTML = `
-            <h2 style='color:#0ff'>Arquivo carregado com sucesso!</h2>
-            <p>${file.name}</p>
-        `;
-    }
+function exportarJSON() {
+    const blob = new Blob([JSON.stringify(dadosOrganizados,null,2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = `${nomeArquivo.split('.')[0]}_organizado.json`; a.click();
+}
 </script>
 
 </body>
