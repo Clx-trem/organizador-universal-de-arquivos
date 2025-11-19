@@ -1,344 +1,440 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema Completo CLX</title>
-<style>
- body{font-family:Arial;background:<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login CLX</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Organizador Universal + Login (CLX)</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #03040a;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
+    :root{
+      --neon: #00eaff;
+      --bg:#03040a;
+      --card:#08111a;
+      --accent:#0ff;
+      --glass: rgba(255,255,255,0.03);
     }
-    .login-box {
-      background: #0d0f1a;
-      padding: 30px;
-      border-radius: 15px;
-      width: 320px;
-      box-shadow: 0 0 15px #00eaff;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,Arial,Helvetica,sans-serif;
+      background: linear-gradient(180deg,var(--bg),#000);
+      color:#e6f7ff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      min-height:100vh;
     }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 5px;
+
+    /* LOGIN SCREEN */
+    #login-screen{
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
     }
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #00eaff;
-      border: none;
-      margin-top: 10px;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
+    .card{
+      width:360px;
+      background:linear-gradient(180deg,var(--card),#06101a);
+      border-radius:12px;
+      padding:24px;
+      box-shadow:0 10px 50px rgba(0,234,255,0.06), inset 0 1px 0 rgba(255,255,255,0.02);
+      border:1px solid rgba(0,234,255,0.06);
     }
-    /* Página organizador */
-    #organizador {
-      display: none;
-      padding: 20px;
-      color: #fff;
+    .card h2{ margin:6px 0 14px; color:var(--neon); text-shadow:0 0 8px rgba(0,234,255,0.08) }
+    .field{ width:100%; margin-bottom:10px; display:block; }
+    .field input{
+      width:100%; padding:12px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04);
+      background:#07101a; color:#dffaff; outline:none;
     }
-    .gear {
-      width: 40px;
-      cursor: pointer;
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      filter: drop-shadow(0 0 5px #00eaff);
+    .btn{
+      display:inline-block; width:100%; padding:12px; border-radius:10px; border:none;
+      background:var(--neon); color:#002028; font-weight:700; cursor:pointer;
+      box-shadow:0 8px 30px rgba(0,234,255,0.06);
     }
-    .admin-box {
-      display: none;
-      position: fixed;
-      top: 80px;
-      right: 20px;
-      background: #0d0f1a;
-      padding: 20px;
-      border-radius: 10px;
-      width: 200px;
-      box-shadow: 0 0 15px #00eaff;
+    .muted{ color: rgba(230,247,255,0.65); font-size:13px; margin-top:8px; text-align:center; cursor:pointer }
+
+    /* MAIN SCREEN */
+    #main-screen{ display:none; min-height:100vh; }
+    .topbar{
+      display:flex; justify-content:space-between; align-items:center;
+      padding:14px 22px; background: linear-gradient(90deg,#00121a,#001524);
+      border-bottom:1px solid rgba(0,234,255,0.06);
     }
+    .brand{
+      display:flex; gap:12px; align-items:center;
+    }
+    .brand h1{ font-size:18px; margin:0; color:var(--neon) }
+    .gear{
+      background:transparent; border:none; font-size:26px; color:var(--neon); cursor:pointer;
+      transition:transform .18s ease;
+    }
+    .gear:hover{ transform: rotate(14deg) scale(1.04); }
+
+    .wrap{ max-width:1100px; margin:28px auto; padding:0 20px; }
+
+    .upload-box{
+      background: linear-gradient(180deg,#07121a,#06111a);
+      border:1px solid rgba(0,234,255,0.04);
+      padding:28px; border-radius:12px; display:flex; gap:20px; align-items:center;
+      justify-content:space-between;
+    }
+    .upload-left{ display:flex; gap:18px; align-items:center; }
+    .upload-icon{ font-size:40px; color:var(--neon) }
+    .upload-info h3{ margin:0 0 6px; color:#dffaff }
+    .file-input{
+      display:inline-block; padding:10px 14px; border-radius:10px; background:rgba(255,255,255,0.03);
+      border:1px dashed rgba(0,234,255,0.06); cursor:pointer; color:var(--neon);
+    }
+    .small{ font-size:13px; color:rgba(230,247,255,0.7) }
+
+    .result{ margin-top:18px; padding:14px; border-radius:10px; background:var(--glass); color:#dffaff; }
+
+    /* ADMIN PANEL modal */
+    #admin-panel{
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;
+      z-index:9999;
+    }
+    .admin-card{
+      width:640px; background:linear-gradient(180deg,#07101a,#061018); padding:18px; border-radius:12px;
+      border:1px solid rgba(0,234,255,0.06);
+    }
+    .admin-head{ display:flex; justify-content:space-between; align-items:center; gap:12px; }
+    .admin-head h3{ margin:0; color:var(--neon) }
+    .close { background:#ff6b6b; color:#fff; border:none; padding:8px 10px; border-radius:8px; cursor:pointer }
+
+    .user-list{ margin-top:12px; max-height:260px; overflow:auto; }
+    .user-row{ display:flex; justify-content:space-between; align-items:center; gap:10px; padding:8px; background:#08111a; border-radius:8px; margin-bottom:8px; border:1px solid rgba(255,255,255,0.02) }
+    .user-row b{ color:#dffaff }
+    .user-row button{ padding:6px 8px; border-radius:8px; border:none; cursor:pointer; background:var(--neon); color:#002028; font-weight:700 }
+
+    /* small responsive */
+    @media (max-width:720px){
+      .upload-box{ flex-direction:column; align-items:stretch }
+      .admin-card{ width:92% }
+    }
+
   </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div class="login-box" id="loginTela">
-  <h2>LOGIN</h2>
-  <input type="text" id="user" placeholder="Usuário" />
-  <input type="password" id="pass" placeholder="Senha" />
-  <button onclick="logar()">Entrar</button>
-</div>
+  <!-- LOGIN -->
+  <section id="login-screen">
+    <div class="card" role="dialog" aria-labelledby="login-title">
+      <h2 id="login-title">🔐 Acesse sua conta</h2>
 
-<!-- ORGANIZADOR -->
-<div id="organizador">
-  <h1>Organizador CLX</h1>
-  <img class="gear" src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png" onclick="toggleAdmin()" />
+      <label class="field"><input id="inputUser" placeholder="Usuário (ex: CLX)" autocomplete="username"></label>
+      <label class="field"><input id="inputPass" type="password" placeholder="Senha" autocomplete="current-password"></label>
 
-  <div class="admin-box" id="adminPainel">
-    <h3>Painel Admin</h3>
-    <p>Configurações do sistema</p>
+      <button class="btn" onclick="handleLogin()">Entrar</button>
+      <div style="display:flex;gap:8px;margin-top:10px;justify-content:center">
+        <div class="muted" onclick="preencherAdmin()">Usar credenciais Admin</div>
+        <div class="muted" onclick="limparLocal()">Reset DB (avançado)</div>
+      </div>
+
+      <p style="font-size:13px;margin-top:12px;color:rgba(230,247,255,0.65);text-align:center">
+        Usuário admin padrão: <b>CLX</b> — senha: <b>02072007</b>
+      </p>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <main id="main-screen" aria-live="polite">
+    <div class="topbar" role="banner">
+      <div class="brand">
+        <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(45deg,#00222a,#00303a);display:flex;align-items:center;justify-content:center;margin-right:8px;box-shadow:0 6px 18px rgba(0,234,255,0.04)">
+          <span style="font-size:20px;color:var(--neon)">CLX</span>
+        </div>
+        <div>
+          <h1 class="topbar-title">📊 Organizador Universal</h1>
+          <div style="font-size:12px;color:rgba(230,247,255,0.6)">Faça upload e organize seus arquivos</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center">
+        <button id="gearBtn" class="gear" title="Painel Admin" onclick="openAdmin()" style="display:none">⚙️</button>
+        <button class="btn" onclick="doLogout()" style="background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--neon)">Sair</button>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="upload-box" role="region" aria-label="Upload">
+        <div class="upload-left">
+          <div class="upload-icon">📎</div>
+          <div class="upload-info">
+            <h3>Selecione um arquivo</h3>
+            <div class="small">Suporta CSV, Excel (.xlsx/.xls), JSON, TSV, TXT</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:center">
+          <label class="file-input">
+            <input id="fileInput" type="file" accept=".csv,.xlsx,.xls,.json,.txt,.tsv" style="display:none" />
+            Escolher arquivo
+          </label>
+          <button class="btn" onclick="handleProcess()">Processar</button>
+        </div>
+      </div>
+
+      <div id="resultado" class="result" style="display:none"></div>
+    </div>
+  </main>
+
+  <!-- ADMIN PANEL -->
+  <div id="admin-panel" role="dialog" aria-modal="true">
+    <div class="admin-card">
+      <div class="admin-head">
+        <h3>⚙️ Painel do Administrador</h3>
+        <div>
+          <button class="close" onclick="closeAdmin()">Fechar</button>
+        </div>
+      </div>
+
+      <p style="margin-top:8px;color:rgba(230,247,255,0.7)">Gerencie usuários. Apenas <strong>CLX</strong> pode abrir este painel.</p>
+
+      <hr style="border-color:rgba(255,255,255,0.02);margin:12px 0">
+
+      <strong>Usuários cadastrados</strong>
+      <div class="user-list" id="userList"></div>
+
+      <hr style="border-color:rgba(255,255,255,0.02);margin:12px 0">
+
+      <strong>Criar novo usuário</strong>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input id="newUser" class="input-dark" placeholder="nome de usuário">
+        <input id="newPass" class="input-dark" placeholder="senha">
+        <button class="btn" onclick="createUser()">Criar</button>
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn" onclick="backupDB()">Fazer backup do DB</button>
+        <button class="btn" onclick="exportDB()">Exportar JSON</button>
+        <button class="btn" onclick="askDeleteDB()" style="background:#ff6b6b;color:#fff">Excluir DB</button>
+      </div>
+    </div>
   </div>
-</div>
 
 <script>
-function logar() {
-  const user = document.getElementById("user").value;
-  const pass = document.getElementById("pass").value;
+/* ---------- Inicialização do banco local ---------- */
+(function initDB(){
+  try {
+    const raw = localStorage.getItem('usuarios');
+    let users = raw ? JSON.parse(raw) : null;
+    if (!users || typeof users !== 'object') users = {};
+    // garante admin CLX com senha 02072007 sempre presente (não sobrescreve outros existentes)
+    if (!users['CLX']) users['CLX'] = '02072007';
+    localStorage.setItem('usuarios', JSON.stringify(users));
+    console.log('DB usuarios inicializado', users);
+  } catch(e) {
+    console.error('Erro inicializando DB', e);
+    localStorage.setItem('usuarios', JSON.stringify({ 'CLX': '02072007' }));
+  }
+})();
 
-  if (user === "CLX" && pass === "02072007") {
-    document.getElementById("loginTela").style.display = "none";
-    document.getElementById("organizador").style.display = "block";
-  } else {
-    alert("Usuário ou senha incorretos!");
+/* ---------- Funções de login ---------- */
+function handleLogin(){
+  const u = (document.getElementById('inputUser').value || '').trim();
+  const p = (document.getElementById('inputPass').value || '');
+  if(!u || !p){ alert('Preencha usuário e senha'); return; }
+
+  let users = JSON.parse(localStorage.getItem('usuarios') || '{}');
+  if(!users[u]) {
+    alert('Usuário não existe!');
+    return;
+  }
+  if(users[u] !== p){
+    alert('Senha incorreta!');
+    return;
+  }
+
+  // login OK
+  localStorage.setItem('logado', u);
+  showMainFor(u);
+}
+
+function preencherAdmin(){
+  document.getElementById('inputUser').value = 'CLX';
+  document.getElementById('inputPass').value = '02072007';
+}
+
+function showMainFor(user){
+  // oculta login, mostra main
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('main-screen').style.display = 'block';
+  // mostra engrenagem somente se admin
+  document.getElementById('gearBtn').style.display = user === 'CLX' ? 'inline-block' : 'none';
+  // limpa campos
+  document.getElementById('inputPass').value = '';
+  document.getElementById('inputUser').value = '';
+  // informar usuário atual
+  console.log('Logado como', user);
+}
+
+/* ---------- Logout ---------- */
+function doLogout(){
+  if(confirm('Deseja sair?')) {
+    localStorage.removeItem('logado');
+    document.getElementById('main-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('resultado').style.display = 'none';
   }
 }
 
-function toggleAdmin() {
-  const box = document.getElementById("adminPainel");
-  box.style.display = box.style.display === "block" ? "none" : "block";
+/* ---------- Admin panel ---------- */
+function openAdmin(){
+  const current = localStorage.getItem('logado');
+  if(current !== 'CLX'){ alert('Apenas ADMIN (CLX) pode acessar o painel'); return; }
+  populateUserList();
+  document.getElementById('admin-panel').style.display = 'flex';
 }
-</script>
+function closeAdmin(){ document.getElementById('admin-panel').style.display = 'none'; }
 
-</body>
-</html>0d1117;color:#fff;margin:0;padding:0}
- .box{max-width:420px;margin:40px auto;background:#161b22;padding:20px;border-radius:10px}
- input,select,button{width:100%;padding:10px;margin:8px 0;border:none;border-radius:6px}
- button{background:#238636;color:#fff;font-weight:bold;cursor:pointer}
- button:hover{opacity:.8}
- .link{color:#58a6ff;cursor:pointer;text-decoration:underline;text-align:center}
- .hidden{display:none}
- table{width:100%;border-collapse:collapse;margin-top:20px}
- td,th{border:1px solid #333;padding:8px;text-align:left}
-</style>
-</head>
-<body>
+function populateUserList(){
+  const users = JSON.parse(localStorage.getItem('usuarios') || '{}');
+  const cont = document.getElementById('userList');
+  cont.innerHTML = '';
+  Object.keys(users).sort().forEach(u=>{
+    const row = document.createElement('div');
+    row.className = 'user-row';
+    row.innerHTML = `
+      <div>
+        <b>${u}</b><div style="font-size:12px;color:rgba(230,247,255,0.6)">senha: ${'*'.repeat((users[u]||'').length)}</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="promptChange('${u}')">Trocar senha</button>
+        ${u === 'CLX' ? '<button onclick="cannotDelete()">🔒</button>' : `<button onclick="deleteUser('${u}')">Excluir</button>`}
+      </div>
+    `;
+    cont.appendChild(row);
+  });
+}
 
-<div id="login" class="box">
- <h2>Login</h2>
- <input id="loginEmail" placeholder="Email">
- <input id="loginSenha" placeholder="Senha" type="password">
- <button onclick="logar()">Entrar</button>
- <p class="link" onclick="show('cadastro')">Criar conta</p>
- <p class="link" onclick="show('recuperar')">Esqueci a senha</p>
-</div>
+function cannotDelete(){ alert('Admin principal CLX não pode ser deletado.'); }
 
-<div id="cadastro" class="box hidden">
- <h2>Criar Conta</h2>
- <input id="cadNome" placeholder="Nome">
- <input id="cadEmail" placeholder="Email">
- <input id="cadSenha" placeholder="Senha" type="password">
- <!-- Tipo de usuário fixado como comum -->
-<input type="hidden" id="cadTipo" value="user">
- <button onclick="criarConta()">Cadastrar</button>
- <p class="link" onclick="show('login')">Voltar</p>
-</div>
+function createUser(){
+  const u = (document.getElementById('newUser').value || '').trim();
+  const p = (document.getElementById('newPass').value || '');
+  if(!u || !p){ alert('Preencha usuário e senha'); return; }
+  if(u.length < 3 || p.length < 3){ alert('Usuário/senha muito curta'); return; }
+  const users = JSON.parse(localStorage.getItem('usuarios') || '{}');
+  if(users[u]){ alert('Usuário já existe'); return; }
+  users[u] = p;
+  localStorage.setItem('usuarios', JSON.stringify(users));
+  document.getElementById('newUser').value=''; document.getElementById('newPass').value='';
+  populateUserList();
+  alert('Usuário criado!');
+}
 
-<div id="recuperar" class="box hidden">
- <h2>Recuperar Senha</h2>
- <input id="recEmail" placeholder="Digite seu email">
- <button onclick="recSenha()">Enviar</button>
- <p class="link" onclick="show('login')">Voltar</p>
-</div>
+function promptChange(u){
+  const novo = prompt(`Digite a nova senha para ${u} (min 3 chars)`);
+  if(novo === null) return; // cancel
+  if(typeof novo !== 'string' || novo.length < 3) return alert('Senha inválida');
+  const users = JSON.parse(localStorage.getItem('usuarios') || '{}');
+  users[u] = novo;
+  localStorage.setItem('usuarios', JSON.stringify(users));
+  populateUserList();
+  alert('Senha alterada!');
+}
 
-<div id="painel" class="box hidden">
- <h2 id="tituloPainel">Painel</h2>
- <button onclick="show('cadColab')">Cadastrar Colaborador</button>
- <button onclick="show('lista')">Lista de Colaboradores</button>
- <button onclick="logout()">Sair</button>
-</div>
+function deleteUser(u){
+  if(!confirm(`Excluir usuário ${u}? Isso NÃO poderá ser desfeito.`)) return;
+  const users = JSON.parse(localStorage.getItem('usuarios') || '{}');
+  if(u === 'CLX'){ alert('Não é permitido excluir o admin CLX'); return; }
+  delete users[u];
+  localStorage.setItem('usuarios', JSON.stringify(users));
+  populateUserList();
+  alert('Usuário excluído');
+}
 
-<div id="cadColab" class="box hidden">
- <h2>Cadastrar Colaborador</h2>
- <input id="colabNome" placeholder="Nome">
- <input id="colabCargo" placeholder="Cargo">
- <button onclick="salvarColab()">Salvar</button>
- <p class="link" onclick="show('painel')">Voltar</p>
-</div>
+/* proteção anti-deletar banco: pedir confirmação forte */
+function askDeleteDB(){
+  const confirm1 = prompt('Para confirmar exclusão do DB digite: DELETE DB');
+  if(confirm1 !== 'DELETE DB') return alert('Operação cancelada');
+  localStorage.removeItem('usuarios');
+  localStorage.removeItem('logado');
+  alert('Banco de usuários excluído. Recarregue a página.');
+}
 
-<div id="lista" class="box hidden">
- <h2>Colaboradores</h2>
- <table id="tabela"></table>
- <p class="link" onclick="show('painel')">Voltar</p>
-</div>
+/* backups / export */
+function backupDB(){
+  const users = JSON.parse(localStorage.getItem('usuarios') || '{}');
+  const blob = new Blob([JSON.stringify(users,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'usuarios_backup.json';
+  a.click();
+}
+function exportDB(){ backupDB(); }
 
-<script>
-let usuarios = JSON.parse(localStorage.getItem('usuarios')||'[]');
+/* reset local (avançado) - util para dev */
+function limparLocal(){
+  if(!confirm('Limpar todo DB local (usuários)?')) return;
+  localStorage.removeItem('usuarios');
+  localStorage.removeItem('logado');
+  // re-inicializa com admin
+  localStorage.setItem('usuarios', JSON.stringify({'CLX':'02072007'}));
+  alert('DB resetado. Admin CLX criado. Recarregue a página.');
+}
 
-// Criar admin padrão se não existir
-if(!usuarios.find(u=>u.email === "carlosfernandolorosa10@gmail.com")){
-    usuarios.push({
-        nome:"Administrador",
-        email:"carlosfernandolorosa10@gmail.com",
-        senha:"02072007",
-        tipo:"admin"
+/* ---------- Processamento de arquivos (básico) ---------- */
+function handleProcess(){
+  const f = document.getElementById('fileInput').files[0];
+  if(!f) return alert('Selecione um arquivo');
+  const name = f.name;
+  const ext = name.split('.').pop().toLowerCase();
+
+  if(['csv','tsv','txt'].includes(ext)){
+    Papa.parse(f, {
+      header:true,
+      skipEmptyLines:true,
+      complete: (res) => showResult(name, res.data)
     });
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-}
-let logado = JSON.parse(localStorage.getItem('logado')||'null');
-let colaboradores = JSON.parse(localStorage.getItem('colabs')||'[]');
-
-function show(x){
- document.querySelectorAll('.box').forEach(e=>e.classList.add('hidden'));
- document.getElementById(x).classList.remove('hidden');
-}
-
-if(logado) abrirPainel();
-
-function salvarLS(){
- localStorage.setItem('usuarios',JSON.stringify(usuarios));
- localStorage.setItem('logado',JSON.stringify(logado));
- localStorage.setItem('colabs',JSON.stringify(colaboradores));
-}
-
-function criarConta(){
- let nome= cadNome.value;
- let email= cadEmail.value;
- let senha= cadSenha.value;
- let tipo = "user"; // sempre usuário comum
- if(!nome||!email||!senha) return alert('Preencha tudo');
- if(usuarios.find(u=>u.email===email)) return alert('Email já existe');
- usuarios.push({nome,email,senha,tipo});
- salvarLS();
- alert('Conta criada');
- show('login');
-}
-
-function logar(){
- let email= loginEmail.value;
- let senha= loginSenha.value;
- let u= usuarios.find(x=>x.email===email && x.senha===senha);
- if(!u) return alert('Login inválido');
- logado=u;
- salvarLS();
- abrirPainel();
-}
-
-function abrirPainel(){
- tituloPainel.innerText = logado.tipo==='admin' ? 'Painel do Administrador' : 'Painel do Usuário';
- show('painel');
-}
-
-function logout(){ logado=null; salvarLS(); show('login'); }
-
-function recSenha(){
- let email= recEmail.value;
- let u= usuarios.find(x=>x.email===email);
- if(!u) return alert('Email não cadastrado');
- alert('Senha: '+u.senha);
- show('login');
-}
-
-function salvarColab(){
- let nome= colabNome.value;
- let cargo= colabCargo.value;
- if(!nome||!cargo) return alert('Preencha tudo');
- colaboradores.push({nome,cargo});
- salvarLS();
- alert('Colaborador salvo');
- show('painel');
-}
-
-function carregar(){
- let t= '<tr><th>Nome</th><th>Cargo</th></tr>';
- colaboradores.forEach(c=>{
-   t+=`<tr><td>${c.nome}</td><td>${c.cargo}</td></tr>`;
- });
- tabela.innerHTML=t;
-}
-
-show('login');
-</script>
-<div id="adminUsuarios" class="box hidden">
- <h2>Gerenciar Usuários</h2>
- <table id="tabUsers"></table>
- <p class="link" onclick="show('painel')">Voltar</p>
-</div>
-
-<script>
-// --- ADMIN FIXO ---
-let adminEmail="carlosfernandolorosa10@gmail.com";
-let adminSenha="02072007";
-if(!usuarios.find(u=>u.email===adminEmail)){
- usuarios.push({nome:"Administrador",email:adminEmail,senha:adminSenha,tipo:"admin"});
- salvarLS();
-}
-
-// Adicionar botão ao painel admin
-function abrirPainel(){
- tituloPainel.innerText = logado.tipo==='admin' ? 'Painel do Administrador' : 'Painel do Usuário';
- if(logado.tipo==='admin'){
-  if(!document.getElementById('btnGerUsers')){
-   let b=document.createElement('button');
-   b.id='btnGerUsers';
-   b.innerText='Gerenciar Usuários';
-   b.onclick=()=>{carregarUsers();show('adminUsuarios');}
-   document.getElementById('painel').appendChild(b);
+    return;
   }
- }
- show('painel');
+  if(['xlsx','xls'].includes(ext)){
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const wb = XLSX.read(e.target.result, {type:'binary'});
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const data = XLSX.utils.sheet_to_json(sheet);
+      showResult(name, data);
+    };
+    reader.readAsBinaryString(f);
+    return;
+  }
+  if(ext === 'json'){
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      let data = [];
+      try{ data = JSON.parse(e.target.result); }catch(err){ return alert('JSON inválido'); }
+      showResult(name, data);
+    };
+    reader.readAsText(f);
+    return;
+  }
+
+  alert('Tipo de arquivo não suportado');
 }
 
-// --- GERENCIAR USUÁRIOS ---
-function carregarUsers(){
- let h=`<tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Ações</th></tr>`;
- usuarios.forEach((u,i)=>{
-  h+=`<tr>
-   <td>${u.nome}</td>
-   <td>${u.email}</td>
-   <td>${u.tipo}</td>
-   <td>
-    <button onclick="editarUser(${i})">Editar</button>
-    <button onclick="resetSenha(${i})">Resetar Senha</button>
-    ${u.email!==adminEmail?`<button onclick="toggleAdmin(${i})">${u.tipo==='admin'?'Remover Admin':'Dar Admin'}</button>`:''}
-    ${u.email!==adminEmail?`<button onclick="deletarUser(${i})">Excluir</button>`:''}
-   </td>
-  </tr>`;
- });
- tabUsers.innerHTML=h;
+function showResult(name, data){
+  const out = document.getElementById('resultado');
+  out.style.display = 'block';
+  out.innerHTML = `<h3 style="color:var(--neon)">Arquivo: ${name}</h3>
+    <div style="font-size:13px;color:rgba(230,247,255,0.8);margin-top:8px">Registros: ${Array.isArray(data)?data.length:0}</div>
+    <pre style="max-height:260px;overflow:auto;background:#06111a;border-radius:8px;padding:10px;margin-top:10px;border:1px solid rgba(255,255,255,0.02)">${escapeHtml(JSON.stringify(data.slice(0,30), null, 2))}${data.length>30?'\n\n... (mostrando 30 primeiros registros)':''}</pre>
+  `;
 }
 
-function editarUser(i){
- let nome=prompt("Novo nome",usuarios[i].nome);
- if(!nome) return;
- usuarios[i].nome=nome;
- salvarLS();
- carregarUsers();
-}
+/* small helper */
+function escapeHtml(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function resetSenha(i){
- let nova=prompt("Nova senha para esse usuário:");
- if(!nova) return;
- usuarios[i].senha=nova;
- salvarLS();
- alert("Senha redefinida!");
-}
-
-function toggleAdmin(i){
- usuarios[i].tipo = usuarios[i].tipo==='admin'?'user':'admin';
- salvarLS();
- carregarUsers();
-}
-
-function deletarUser(i){
- if(!confirm("Tem certeza?")) return;
- usuarios.splice(i,1);
- salvarLS();
- carregarUsers();
-}
+/* ---------- Auto-login if already logged ---------- */
+(function tryAutoLogin(){
+  const logged = localStorage.getItem('logado');
+  if(logged){
+    showMainFor(logged);
+  }
+})();
 </script>
 </body>
 </html>
