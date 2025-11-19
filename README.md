@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Organizador Universal — Login & Admin (CLX)</title>
 
-<!-- Bibliotecas do seu organizador -->
+<!-- Bibliotecas do organizador -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
@@ -24,21 +24,20 @@
   .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;}
   .card{
     width:100%; max-width:1100px; border-radius:14px;
-    background: linear-gradient(180deg, rgba(10,10,25,0.8), rgba(6,6,20,0.85));
+    background: linear-gradient(180deg, rgba(10,10,25,0.85), rgba(6,6,20,0.85));
     box-shadow:0 8px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
     overflow:hidden;
     border:1px solid rgba(255,255,255,0.03);
-    display:grid; grid-template-columns: 380px 1fr;
+    display:grid; grid-template-columns: 360px 1fr;
     gap: 0;
     animation: appear .45s ease both;
   }
   @keyframes appear { from {opacity:0; transform: translateY(18px)} to {opacity:1; transform:none} }
 
-  /* SIDEBAR (login/admin controls) */
   .side {
     padding:22px; border-right:1px solid rgba(255,255,255,0.03);
     background: linear-gradient(180deg, rgba(10,6,30,0.45), rgba(6,6,20,0.25));
-    min-height:520px;
+    min-height:640px;
   }
   .logo {
     display:flex; gap:12px; align-items:center; margin-bottom:18px;
@@ -51,16 +50,14 @@
     transform:rotate(-12deg);
   }
   .logo h1{font-size:18px;margin:0;color:var(--neon1);letter-spacing:0.2px}
-
   label{display:block;font-size:13px;color:var(--muted);margin-top:14px}
-  input, select {
+  input, select, textarea {
     width:100%; padding:10px 12px; margin-top:8px; border-radius:10px;
     background: linear-gradient(180deg,#021026, #06122a);
     border:1px solid rgba(255,255,255,0.04); color:#e8f7ff;
     outline:none; box-shadow: 0 6px 18px rgba(0,0,0,0.5) inset;
   }
   input:focus { box-shadow:0 0 18px rgba(0,168,255,0.10); border-color:var(--neon1) }
-
   .btn {
     display:inline-block; width:100%; padding:11px; margin-top:16px; border-radius:10px;
     background: linear-gradient(90deg,var(--neon2),var(--neon1));
@@ -69,32 +66,23 @@
     transition: transform .14s ease, box-shadow .14s;
   }
   .btn:hover { transform: translateY(-3px); box-shadow:0 12px 28px rgba(0,120,255,0.18); }
-
   .muted { color:var(--muted); font-size:13px; margin-top:10px }
-
   .small-btn {
     padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04);
     background:transparent; color:var(--neon1); cursor:pointer; margin-top:10px;
   }
-
-  /* MAIN CONTENT (organizer) */
   .main {
-    padding:18px; min-height:520px; overflow:auto;
+    padding:18px; min-height:640px; overflow:auto;
     background: linear-gradient(180deg, rgba(5,7,20,0.25), rgba(2,4,12,0.15));
   }
   header.main-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px }
   header.main-head h2 { margin:0; color:var(--neon1) }
-  header.main-head p { margin:0; color:var(--muted) }
-
-  /* tabs */
   .tabs { display:flex; gap:8px; align-items:center }
   .tab-button {
     padding:8px 12px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03);
     color:var(--muted); cursor:pointer;
   }
   .tab-button.active { background: linear-gradient(90deg,#02112a, #081033); color:var(--neon1); box-shadow:0 6px 26px rgba(0,120,255,0.06) }
-
-  /* Tables & preview */
   .upload-box {
     border:2px dashed rgba(255,255,255,0.05); padding:22px; border-radius:10px; background:var(--glass);
     text-align:center;
@@ -102,30 +90,28 @@
   table { width:100%; border-collapse:collapse; margin-top:12px; background:transparent }
   th, td { padding:8px; border-bottom:1px dashed rgba(255,255,255,0.03); color:#e6f7ff; font-size:13px; text-align:left }
   th { color:var(--neon2); font-weight:700; background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent) }
-
   .categoria { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:10px; border-radius:8px; margin-bottom:12px; border:1px solid rgba(255,255,255,0.02) }
   .categoria-titulo { padding:6px 8px; border-radius:6px; margin-bottom:8px; display:inline-block; background:linear-gradient(90deg, rgba(0,120,255,0.05), rgba(122,44,255,0.04)); color:var(--neon1) }
-
-  /* user list in admin */
   .user-row { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px; border-radius:8px; background:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(10,10,20,0.25)); margin-bottom:8px }
   .tag { padding:6px 8px; border-radius:100px; background:linear-gradient(90deg,var(--neon1),var(--neon2)); color:#001; font-weight:700; font-size:12px }
-
   .actions button { margin-left:8px; background:transparent; color:var(--neon1); border:1px solid rgba(255,255,255,0.03); padding:6px 8px; border-radius:8px; cursor:pointer }
-
   footer { text-align:center; color:var(--muted); margin-top:18px; font-size:13px }
-
-  /* small helpers */
   .row{display:flex;gap:8px;align-items:center}
   .flex{display:flex;gap:12px}
   .grow{flex:1}
   .danger{background:linear-gradient(90deg,#ff6b6b,#ff4d4d); color:#fff;border:none}
   .ok{background:linear-gradient(90deg,#00ffb3,#00a8ff); color:#001;border:none}
-
   @media (max-width:980px){
     .card{grid-template-columns:1fr; max-width:920px}
     .side{border-right:none}
   }
-
+  /* admin gear floating */
+  .gear {
+    width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--neon1),var(--neon2));
+    display:flex;align-items:center;justify-content:center;color:#001;font-weight:800;cursor:pointer;
+    box-shadow:0 10px 30px rgba(0,160,255,0.12);
+  }
+  .gear:hover { transform: rotate(12deg) scale(1.04) }
 </style>
 </head>
 <body>
@@ -141,7 +127,7 @@
         </div>
       </div>
 
-      <!-- LOGIN FORM (shown initially) -->
+      <!-- LOGIN FORM -->
       <div id="loginBox">
         <label for="loginUser">Usuário</label>
         <input id="loginUser" placeholder="ex: CLX" autocomplete="username" />
@@ -154,7 +140,7 @@
         </div>
       </div>
 
-      <!-- RECUPERAR SENHA (visível via botão) -->
+      <!-- RECUPERAR SENHA -->
       <div id="recoverBox" class="hidden">
         <label for="recoverUser">Informe seu usuário</label>
         <input id="recoverUser" placeholder="Seu usuário" />
@@ -165,7 +151,7 @@
         <div id="recoverMsg" class="muted" style="margin-top:8px"></div>
       </div>
 
-      <!-- ADMIN PANEL LINKS (shown when logged as admin) -->
+      <!-- ADMIN QUICK LINKS (aparece só para admin) -->
       <div id="adminQuick" class="hidden" style="margin-top:12px">
         <div class="muted">Ações rápidas (admin)</div>
         <div style="margin-top:10px">
@@ -179,7 +165,6 @@
         </div>
       </div>
 
-      <!-- ADMIN CREATE/EDIT area (sidebar small) -->
       <div id="sideContent" style="margin-top:14px"></div>
 
       <div style="margin-top:18px">
@@ -198,11 +183,13 @@
           <h2>📊 Organizador Universal de Arquivos</h2>
           <p class="muted">Carregue qualquer arquivo e organize pelos campos que desejar</p>
         </div>
-        <div class="tabs">
+        <div class="tabs" style="align-items:center">
           <button class="tab-button active" data-tab="upload">📁 Upload</button>
           <button class="tab-button" data-tab="organizacao" id="tab-organizacao" disabled>⚙️ Organização</button>
           <button class="tab-button" data-tab="visualizacao" id="tab-visualizacao" disabled>👁️ Visualização</button>
           <button class="tab-button" data-tab="exportacao" id="tab-exportacao" disabled>💾 Exportação</button>
+          <!-- gear placeholder (visible only after login and only to admin) -->
+          <div id="gearWrap" style="margin-left:12px"></div>
         </div>
       </header>
 
@@ -260,13 +247,13 @@
 
 <script>
 /* ========================
-  STORAGE KEYS & INICIAL
+  STORAGE & INIT
    ======================== */
-const STORAGE_USERS = 'ou_usuarios_v1';      // usuarios stored
-const STORAGE_LOG = 'ou_logs_v1';           // logs actions
-const STORAGE_CURRENT = 'ou_logado_v1';     // current logged user
+const STORAGE_USERS = 'ou_usuarios_v1';
+const STORAGE_LOG = 'ou_logs_v1';
+const STORAGE_CURRENT = 'ou_logado_v1';
 
-// inicializa banco usuarios com admin CLX (impossível remover por UI)
+// ensure admin exists
 function initUsers(){
   let u = localStorage.getItem(STORAGE_USERS);
   if(!u){
@@ -274,48 +261,37 @@ function initUsers(){
       { usuario: 'CLX', senha: '02072007', ativo: true, cargo: 'admin', nome: 'Administrador CLX' }
     ];
     localStorage.setItem(STORAGE_USERS, JSON.stringify(admin));
-    logAction('system', 'init_admin');
+    logAction('system','init_admin');
     return;
   }
-  // garante admin existe sempre
   let arr = JSON.parse(u);
   if(!arr.some(x=>x.usuario==='CLX')){
     arr.unshift({ usuario: 'CLX', senha: '02072007', ativo: true, cargo: 'admin', nome: 'Administrador CLX' });
     localStorage.setItem(STORAGE_USERS, JSON.stringify(arr));
-    logAction('system', 'restore_admin');
+    logAction('system','restore_admin');
   }
 }
 initUsers();
 
-// logs simples
 function getLogs(){ return JSON.parse(localStorage.getItem(STORAGE_LOG) || '[]'); }
 function saveLogs(a){ localStorage.setItem(STORAGE_LOG, JSON.stringify(a)); }
-function logAction(actor, action, details=''){
-  const arr = getLogs();
-  arr.unshift({ ts: new Date().toISOString(), actor, action, details });
-  // limit log length
-  if(arr.length>200) arr.length = 200;
-  saveLogs(arr);
-}
+function logAction(actor, action, details=''){ const arr = getLogs(); arr.unshift({ ts: new Date().toISOString(), actor, action, details }); if(arr.length>300) arr.length=300; saveLogs(arr); }
 
-/* ========================
-   HELPERS / UI SHORTCUTS
-   ======================== */
+/* UI helpers */
 const $ = id => document.getElementById(id);
-const qs = sel => document.querySelector(sel);
 
-/* Tabs handling */
+/* Tabs wiring */
 document.querySelectorAll('.tab-button').forEach(btn=>{
   btn.addEventListener('click', ()=> {
     document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     const tab = btn.dataset.tab;
     document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
-    $('aba-'+tab).style.display = 'block';
+    document.getElementById('aba-'+tab).style.display = 'block';
   });
 });
 
-// quick refs
+/* quick refs */
 const loginBtn = $('loginBtn');
 const logoutBtn = $('logoutBtn');
 const loginError = $('loginError');
@@ -326,10 +302,9 @@ const showRecoverBtn = $('showRecoverBtn');
 const backToLogin = $('backToLogin');
 const adminQuick = $('adminQuick');
 const sideContent = $('sideContent');
+const gearWrap = $('gearWrap');
 
-/* ========================
-   LOGIN / AUTH
-   ======================== */
+/* LOGIN */
 loginBtn.addEventListener('click', attemptLogin);
 showRecoverBtn.addEventListener('click', ()=>{ loginBox.classList.add('hidden'); recoverBox.classList.remove('hidden'); });
 backToLogin.addEventListener('click', ()=>{ recoverBox.classList.add('hidden'); loginBox.classList.remove('hidden'); });
@@ -338,35 +313,17 @@ function attemptLogin(){
   const user = $('loginUser').value.trim();
   const pass = $('loginPass').value;
   if(!user || !pass){ loginError.textContent = 'Preencha usuário e senha'; return; }
-
   const users = JSON.parse(localStorage.getItem(STORAGE_USERS) || '[]');
   const found = users.find(u => u.usuario === user && u.senha === pass);
-
-  if(!found){
-    loginError.textContent = 'Usuário ou senha incorretos';
-    logAction(user, 'failed_login');
-    return;
-  }
-  if(!found.ativo){
-    loginError.textContent = 'Conta desativada. Contate o administrador.';
-    logAction(user, 'login_blocked');
-    return;
-  }
-
-  // sucesso
+  if(!found){ loginError.textContent = 'Usuário ou senha incorretos'; logAction(user,'failed_login'); return; }
+  if(!found.ativo){ loginError.textContent = 'Conta desativada. Contate o administrador.'; logAction(user,'login_blocked'); return; }
   localStorage.setItem(STORAGE_CURRENT, JSON.stringify({usuario: found.usuario, cargo: found.cargo, nome: found.nome || found.usuario}));
   loginError.textContent = '';
-  logAction(found.usuario, 'login_success');
-
-  // atualizar UI
+  logAction(found.usuario,'login_success');
   $('logoutBtn').classList.remove('hidden');
   $('loginBox').classList.add('hidden');
-
-  if(found.cargo === 'admin'){
-    showAdminUI(found);
-  } else {
-    showUserUI(found);
-  }
+  // show organizer UI
+  if(found.cargo === 'admin') showAdminUI(found); else showUserUI(found);
 }
 
 /* LOGOUT */
@@ -375,16 +332,13 @@ $('logoutBtn').addEventListener('click', ()=>{
   location.reload();
 });
 
-/* ========================
-   ADMIN UI & ACTIONS
-   ======================== */
-
+/* ADMIN UI */
 function showAdminUI(admin){
   adminQuick.classList.remove('hidden');
-  $('sideContent').innerHTML = `
+  sideContent.innerHTML = `
     <div style="margin-top:12px">
-      <div style="font-size:13px;color:var(--neon1)">Logado: ${admin.usuario}</div>
-      <div style="font-size:12px;color:var(--muted)">${admin.nome || ''}</div>
+      <div style="font-size:13px;color:var(--neon1)">Logado: ${escapeHtml(admin.usuario)}</div>
+      <div style="font-size:12px;color:var(--muted)">${escapeHtml(admin.nome || '')}</div>
       <div style="margin-top:10px">
         <button class="small-btn" id="openCreate">Criar usuário</button>
         <button class="small-btn" id="openList">Gerenciar</button>
@@ -392,15 +346,12 @@ function showAdminUI(admin){
       </div>
     </div>
   `;
-  // attach
   $('openCreate')?.addEventListener('click', abrirCriarUsuarioAdmin);
   $('openList')?.addEventListener('click', listarUsuariosAdmin);
   $('openLogs')?.addEventListener('click', mostrarLogsAdmin);
-
-  // show initial main admin screen
-  $('mainArea').scrollTop = 0;
-  $('conteudoAdmin')?.remove?.();
-  // render a big admin panel inside main instead of organizer
+  // put gear in header main (admin only)
+  gearWrap.innerHTML = `<div class="gear" title="Painel Admin" id="adminGear">⚙️</div>`;
+  $('adminGear').addEventListener('click', ()=>{ renderAdminMain(); });
   renderAdminMain();
 }
 
@@ -421,7 +372,7 @@ function renderAdminMain(){
 }
 
 function abrirCriarUsuarioAdmin(){
-  const c = $('adminContent') || document.getElementById('conteudoAdmin') || (() => { renderAdminMain(); return $('adminContent'); })();
+  const c = $('adminContent');
   c.innerHTML = `
     <h3>Criar novo usuário</h3>
     <label>Nome</label><input id="adm_new_nome" placeholder="Nome (opcional)">
@@ -441,15 +392,12 @@ function adminSalvarUsuario(){
   const usuario = $('adm_new_user').value.trim();
   const senha = $('adm_new_pass').value.trim();
   const msg = $('adm_msg');
-
   if(!usuario || !senha){ msg.textContent = 'Usuário e senha obrigatórios.'; return; }
-
   let users = JSON.parse(localStorage.getItem(STORAGE_USERS) || '[]');
   if(users.some(u => u.usuario === usuario)){ msg.textContent = 'Usuário já existe.'; return; }
-
   users.push({ usuario, senha, ativo: true, cargo: 'user', nome: nome || usuario });
   localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-  logAction(getCurrentUser(), 'admin_create_user', usuario);
+  logAction(getCurrentUser(),'admin_create_user',usuario);
   msg.textContent = 'Usuário criado com sucesso.';
   listarUsuariosAdmin();
 }
@@ -457,7 +405,7 @@ function adminSalvarUsuario(){
 function listarUsuariosAdmin(filter=''){
   let users = JSON.parse(localStorage.getItem(STORAGE_USERS) || '[]');
   if(filter) users = users.filter(u => u.usuario.toLowerCase().includes(filter.toLowerCase()) || (u.nome && u.nome.toLowerCase().includes(filter.toLowerCase())));
-  const area = $('adminContent') || (() => { renderAdminMain(); return $('adminContent'); })();
+  const area = $('adminContent');
   let html = '<h3>Usuários</h3>';
   if(users.length===0) html += '<div class="muted">Nenhum usuário</div>';
   html += '<div style="margin-top:8px">';
@@ -486,7 +434,7 @@ function abrirEditarUsuario(usuario){
   const users = JSON.parse(localStorage.getItem(STORAGE_USERS) || '[]');
   const u = users.find(x=>x.usuario === usuario);
   if(!u){ alert('Usuário não encontrado'); return; }
-  const area = $('adminContent') || (() => { renderAdminMain(); return $('adminContent'); })();
+  const area = $('adminContent');
   area.innerHTML = `
     <h3>Editar ${escapeHtml(u.usuario)}</h3>
     <label>Nome</label><input id="edit_nome" value="${escapeAttr(u.nome||'')}" />
@@ -509,7 +457,7 @@ function adminSalvarEdicao(usuario){
   users[i].nome = nome || users[i].nome;
   if(nova && nova.length>0) users[i].senha = nova;
   localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-  logAction(getCurrentUser(), 'admin_edit_user', usuario);
+  logAction(getCurrentUser(),'admin_edit_user',usuario);
   $('edit_msg').textContent = 'Salvo!';
   listarUsuariosAdmin();
 }
@@ -522,7 +470,7 @@ function adminResetSenha(usuario){
   const i = users.findIndex(u=>u.usuario===usuario);
   users[i].senha = nova;
   localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-  logAction(getCurrentUser(), 'admin_reset_pwd', usuario);
+  logAction(getCurrentUser(),'admin_reset_pwd',usuario);
   alert('Senha redefinida!');
   listarUsuariosAdmin();
 }
@@ -543,28 +491,24 @@ function adminDeleteUser(usuario){
   let users = JSON.parse(localStorage.getItem(STORAGE_USERS) || '[]');
   users = users.filter(u=>u.usuario !== usuario);
   localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-  logAction(getCurrentUser(), 'admin_delete_user', usuario);
+  logAction(getCurrentUser(),'admin_delete_user',usuario);
   listarUsuariosAdmin();
 }
 
-/* PROTEÇÃO ANTI-DELETAR BANCO */
 function forcarProtecaoBanco(){
-  // re-grava admin e faz backup simples
   const users = JSON.parse(localStorage.getItem(STORAGE_USERS) || '[]');
   if(!users.some(u=>u.usuario==='CLX')){
     users.unshift({ usuario:'CLX', senha:'02072007', ativo:true, cargo:'admin', nome:'Administrador CLX' });
   }
   localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-  // save backup under different key
   localStorage.setItem('ou_users_backup', JSON.stringify(users));
   alert('Banco reforçado e backup criado.');
-  logAction(getCurrentUser(), 'force_protect_db');
+  logAction(getCurrentUser(),'force_protect_db');
 }
 
-/* LOGS */
 function mostrarLogsAdmin(){
   const logs = getLogs();
-  const area = $('adminContent') || (() => { renderAdminMain(); return $('adminContent'); })();
+  const area = $('adminContent');
   let html = '<h3>Últimos logs</h3>';
   html += `<div style="max-height:280px;overflow:auto;background:rgba(255,255,255,0.02);padding:8px;border-radius:8px">`;
   if(logs.length===0) html += '<div class="muted">Sem logs</div>';
@@ -575,13 +519,9 @@ function mostrarLogsAdmin(){
   area.innerHTML = html;
 }
 
-/* ========================
-   USER UI (non-admin)
-   ======================== */
+/* USER UI */
 function showUserUI(user){
-  // render the organizer UI inside main content (keep header with tabs)
-  renderOrganizer(); // this will populate the existing main area with organizer code
-  // display small info in sidebar: current user + change password
+  renderOrganizer(); // populate organizer in main area
   sideContent.innerHTML = `
     <div style="margin-top:8px">
       <div style="font-weight:700">${escapeHtml(user.usuario)}</div>
@@ -594,49 +534,152 @@ function showUserUI(user){
   $('btnChangePwd').addEventListener('click', ()=>{ userChangePasswordPrompt(user.usuario); });
 }
 
+/* get current user helper */
 function getCurrentUser(){ const c = localStorage.getItem(STORAGE_CURRENT); return c? JSON.parse(c).usuario : null; }
 
-/* ========================
-   ORGANIZER (INTEGRATED)
-   ======================== */
+/* ORGANIZER INTEGRATION (your original organizer code, adapted) */
+function renderOrganizer(){
+  // Re-render the original organizer UI into the main area (tabs/header already present)
+  const main = $('mainArea');
+  main.innerHTML = `
+    <header class="main-head">
+      <div>
+        <h2>📊 Organizador Universal de Arquivos</h2>
+        <p class="muted">Carregue qualquer arquivo e organize pelos campos que desejar</p>
+      </div>
+      <div class="tabs" style="align-items:center">
+        <button class="tab-button active" data-tab="upload">📁 Upload</button>
+        <button class="tab-button" data-tab="organizacao" id="tab-organizacao" disabled>⚙️ Organização</button>
+        <button class="tab-button" data-tab="visualizacao" id="tab-visualizacao" disabled>👁️ Visualização</button>
+        <button class="tab-button" data-tab="exportacao" id="tab-exportacao" disabled>💾 Exportação</button>
+        <div id="gearWrapInner"></div>
+      </div>
+    </header>
 
-/* The organizer code provided by the user is inserted here.
-   I adapted it to work inside this single-page app and to not overwrite the page.
-   We'll reuse the same element IDs already used above (fileInput, tabs, etc.)
-*/
+    <!-- Tab contents (same IDs used by code) -->
+    <div id="aba-upload" class="tab-content active">
+      <div class="upload-box">
+        <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json,.tsv,.txt" />
+        <label for="fileInput" style="display:block;cursor:pointer">
+            <div class="upload-icon" style="font-size:44px">📎</div>
+            <h3>Clique para selecionar arquivo</h3>
+            <p class="muted">Suporta: CSV, Excel (.xlsx, .xls), JSON, TSV</p>
+        </label>
+      </div>
+      <div id="file-info" style="display:none;margin-top:14px">
+          <h3>Arquivo Carregado:</h3>
+          <div id="file-details"></div>
+          <button class="btn" id="processBtn">Processar Arquivo</button>
+      </div>
+    </div>
 
+    <div id="aba-organizacao" class="tab-content" style="display:none">
+        <h3>Escolha como organizar seus dados</h3>
+        <label>Organizar por:</label>
+        <select id="campo-organizacao">
+            <option value="">Selecione um campo...</option>
+        </select>
+        <div id="preview-organizacao" style="margin-top:12px"></div>
+        <button class="btn" id="aplicarBtn" disabled>Aplicar Organização</button>
+    </div>
+
+    <div id="aba-visualizacao" class="tab-content" style="display:none">
+        <input id="busca-global" type="text" placeholder="Buscar..." style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#eaf2ff" />
+        <div style="margin-top:12px">
+          <button class="small-btn" id="expandAll">Expandir Todas</button>
+          <button class="small-btn" id="collapseAll">Recolher Todas</button>
+        </div>
+        <div id="tabelas" style="margin-top:12px"></div>
+    </div>
+
+    <div id="aba-exportacao" class="tab-content" style="display:none">
+        <h3>Exportar Dados Organizados</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" id="exportExcelBtn">📊 Baixar Excel</button>
+          <button class="btn" id="exportCSVBtn">📄 Baixar CSV</button>
+          <button class="btn" id="exportJSONBtn">🔗 Baixar JSON</button>
+        </div>
+    </div>
+  `;
+
+  // wire tabs inside organizer
+  document.querySelectorAll('#mainArea .tab-button').forEach(btn=>{
+    btn.addEventListener('click', ()=> {
+      document.querySelectorAll('#mainArea .tab-button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
+      document.getElementById('aba-'+tab).style.display = 'block';
+    });
+  });
+
+  // wire organizer events (rebind)
+  const fileInput = document.querySelector('#fileInput');
+  const processBtn = document.querySelector('#processBtn');
+  const btnAplicar = document.querySelector('#aplicarBtn');
+  const campoOrganizacao = document.querySelector('#campo-organizacao');
+
+  if(fileInput){
+    fileInput.addEventListener('change', e=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      nomeArquivo = file.name;
+      $('file-details').textContent = `Nome: ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+      $('file-info').style.display = 'block';
+    });
+  }
+
+  processBtn?.addEventListener('click', processarArquivo);
+  btnAplicar?.addEventListener('click', aplicarOrganizacao);
+  campoOrganizacao?.addEventListener('change', atualizarPreview);
+
+  $('exportExcelBtn')?.addEventListener('click', ()=> {
+    const wb = XLSX.utils.book_new();
+    Object.keys(dadosOrganizados).forEach(cat=>{
+      const ws = XLSX.utils.json_to_sheet(dadosOrganizados[cat]);
+      XLSX.utils.book_append_sheet(wb, ws, cat.slice(0,31));
+    });
+    XLSX.writeFile(wb, `${nomeArquivo.split('.')[0] || 'dados'}_organizado.xlsx`);
+  });
+
+  $('exportCSVBtn')?.addEventListener('click', ()=> {
+    const todos = Object.values(dadosOrganizados).flat();
+    const csv = Papa.unparse(todos);
+    const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `${nomeArquivo.split('.')[0] || 'dados'}_organizado.csv`; a.click();
+  });
+
+  $('exportJSONBtn')?.addEventListener('click', ()=> {
+    const blob = new Blob([JSON.stringify(dadosOrganizados,null,2)], { type:'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${nomeArquivo.split('.')[0] || 'dados'}_organizado.json`; a.click();
+  });
+
+  $('busca-global')?.addEventListener('input', ()=>{
+    const termo = $('busca-global').value.toLowerCase();
+    document.querySelectorAll('.categoria').forEach(cat => {
+      cat.style.display = cat.innerText.toLowerCase().includes(termo) ? '' : 'none';
+    });
+  });
+  $('expandAll')?.addEventListener('click', ()=> document.querySelectorAll('.categoria table').forEach(t=>t.style.display='table'));
+  $('collapseAll')?.addEventListener('click', ()=> document.querySelectorAll('.categoria table').forEach(t=>t.style.display='none'));
+
+  // add gear inside organizer header if current user is admin (redundant but safe)
+  const cur = localStorage.getItem(STORAGE_CURRENT);
+  if(cur && JSON.parse(cur).cargo === 'admin'){
+    const gearInner = document.getElementById('gearWrapInner');
+    if(gearInner) gearInner.innerHTML = `<div class="gear" id="adminGearInner" title="Painel Admin">⚙️</div>`;
+    document.getElementById('adminGearInner')?.addEventListener('click', ()=>{ renderAdminMain(); });
+  }
+}
+
+/* Organizer functions (processing / preview / export) */
 let dadosOriginais = [];
 let dadosOrganizados = {};
 let nomeArquivo = "";
 
-const fileInput = document.querySelector('#fileInput');
-const processBtn = document.querySelector('#processBtn');
-const btnAplicar = document.querySelector('#aplicarBtn');
-const campoOrganizacao = document.querySelector('#campo-organizacao');
-
-if(fileInput){
-  fileInput.addEventListener('change', e=>{
-    const file = e.target.files[0];
-    if(!file) return;
-    nomeArquivo = file.name;
-    $('file-details').textContent = `Nome: ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
-    $('file-info').style.display = 'block';
-  });
-}
-
-if(processBtn){
-  processBtn.addEventListener('click', processarArquivo);
-}
-if(btnAplicar){
-  btnAplicar.addEventListener('click', aplicarOrganizacao);
-}
-if(campoOrganizacao){
-  campoOrganizacao.addEventListener('change', atualizarPreview);
-}
-
-/* Reusing functions adapted from your organizer code */
 function processarArquivo(){
-  const file = fileInput.files[0];
+  const file = document.querySelector('#fileInput')?.files?.[0];
   if(!file) return alert('Selecione um arquivo primeiro!');
   const extensao = file.name.split('.').pop().toLowerCase();
 
@@ -671,13 +714,10 @@ function prepararOrganizacao(){
   const campos = Object.keys(dadosOriginais[0]);
   const select = $('campo-organizacao');
   select.innerHTML = '<option value="">Selecione um campo...</option>';
-  campos.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c; opt.textContent = c; select.appendChild(opt);
-  });
+  campos.forEach(c => { const opt = document.createElement('option'); opt.value = c; opt.textContent = c; select.appendChild(opt); });
   $('tab-organizacao').disabled = false;
   // switch to organizacao tab
-  document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#mainArea .tab-button').forEach(b=>b.classList.remove('active'));
   document.querySelector('[data-tab="organizacao"]').classList.add('active');
   document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
   $('aba-organizacao').style.display = 'block';
@@ -703,7 +743,7 @@ function aplicarOrganizacao(){
   $('tab-visualizacao').disabled = false;
   $('tab-exportacao').disabled = false;
   // switch to visualizacao
-  document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#mainArea .tab-button').forEach(b=>b.classList.remove('active'));
   document.querySelector('[data-tab="visualizacao"]').classList.add('active');
   document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
   $('aba-visualizacao').style.display = 'block';
@@ -729,62 +769,22 @@ function renderizarVisualizacao(){
   });
 }
 
-/* export functions */
-$('exportExcelBtn')?.addEventListener('click', ()=> {
-  const wb = XLSX.utils.book_new();
-  Object.keys(dadosOrganizados).forEach(cat=>{
-    const ws = XLSX.utils.json_to_sheet(dadosOrganizados[cat]);
-    XLSX.utils.book_append_sheet(wb, ws, cat.slice(0,31));
-  });
-  XLSX.writeFile(wb, `${nomeArquivo.split('.')[0] || 'dados'}_organizado.xlsx`);
-});
-
-$('exportCSVBtn')?.addEventListener('click', ()=> {
-  const todos = Object.values(dadosOrganizados).flat();
-  const csv = Papa.unparse(todos);
-  const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = `${nomeArquivo.split('.')[0] || 'dados'}_organizado.csv`; a.click();
-});
-
-$('exportJSONBtn')?.addEventListener('click', ()=> {
-  const blob = new Blob([JSON.stringify(dadosOrganizados,null,2)], { type:'application/json' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${nomeArquivo.split('.')[0] || 'dados'}_organizado.json`; a.click();
-});
-
-/* search + expand/collapse */
-$('busca-global')?.addEventListener('input', ()=>{
-  const termo = $('busca-global').value.toLowerCase();
-  document.querySelectorAll('.categoria').forEach(cat => {
-    cat.style.display = cat.innerText.toLowerCase().includes(termo) ? '' : 'none';
-  });
-});
-$('expandAll')?.addEventListener('click', ()=> document.querySelectorAll('.categoria table').forEach(t=>t.style.display='table'));
-$('collapseAll')?.addEventListener('click', ()=> document.querySelectorAll('.categoria table').forEach(t=>t.style.display='none'));
-
-/* ========================
-   AUX: password reset request (user) -> creates log for admin manual approval
-   ======================== */
+/* Recover request (user) -> logs a request for admin to handle */
 $('recoverSend')?.addEventListener('click', ()=>{
   const user = $('recoverUser').value.trim();
   if(!user){ recoverMsg.textContent = 'Informe seu usuário.'; return; }
   const arr = JSON.parse(localStorage.getItem(STORAGE_USERS) || '[]');
   if(!arr.some(u=>u.usuario===user)){ recoverMsg.textContent = 'Usuário não encontrado.'; return; }
-  // create a reset request log (admin must approve via admin panel -> we simply log)
   logAction(user, 'request_password_reset', 'request sent');
   recoverMsg.textContent = 'Pedido enviado ao admin. Peça para o admin redefinir sua senha.';
 });
 
-/* ========================
-   UTIL / SECURITY HELPERS
-   ======================== */
+/* UTIL helpers */
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 function escapeAttr(s){ return String(s).replace(/"/g,'&quot;'); }
 function escapeJs(s){ return String(s).replace(/'/g,"\\'").replace(/"/g,'\\"'); }
 
-/* ========================
-   USER SELF-SERVICE: change password
-   ======================== */
+/* User self-change password */
 function userChangePasswordPrompt(usuario){
   const novo = prompt('Digite nova senha (mínimo 4 caracteres):');
   if(!novo || novo.length < 4){ alert('Senha inválida'); return; }
@@ -793,20 +793,16 @@ function userChangePasswordPrompt(usuario){
   if(i===-1){ alert('Usuário não encontrado'); return; }
   users[i].senha = novo;
   localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-  logAction(usuario, 'user_change_password');
+  logAction(usuario,'user_change_password');
   alert('Senha alterada com sucesso!');
 }
 
-/* ========================
-   ADMIN: quick functions wired to top sidebar buttons
-   ======================== */
+/* sidebar quick buttons */
 $('btnCreateUser')?.addEventListener('click', abrirCriarUsuarioAdmin);
 $('btnListUsers')?.addEventListener('click', listarUsuariosAdmin);
 $('btnViewLogs')?.addEventListener('click', mostrarLogsAdmin);
 
-/* ========================
-   STARTUP: detect if someone already logged (persist)
-   ======================== */
+/* STARTUP: persist login */
 (function startup(){
   const logged = localStorage.getItem(STORAGE_CURRENT);
   if(logged){
@@ -816,22 +812,12 @@ $('btnViewLogs')?.addEventListener('click', mostrarLogsAdmin);
     if(found && found.ativo){
       if(found.cargo === 'admin') showAdminUI(found);
       else showUserUI(found);
-      // ensure logout visible
       $('logoutBtn').classList.remove('hidden');
     } else {
-      // stale session
       localStorage.removeItem(STORAGE_CURRENT);
     }
-  } else {
-    // ensure organizer not visible until login
-    // hide main content except header and tabs still present but locked
-    // nothing to do; user must login
   }
 })();
-
-/* ========================
-   Final helpers (escape-safe) - done
-   ======================== */
 
 </script>
 </body>
