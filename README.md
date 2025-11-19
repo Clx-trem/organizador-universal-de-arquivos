@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
@@ -24,7 +23,6 @@
       -moz-osx-font-smoothing:grayscale;
       min-height:100vh;
     }
-
     /* LOGIN SCREEN */
     #login-screen{
       height:100vh;
@@ -53,7 +51,6 @@
       box-shadow:0 8px 30px rgba(0,234,255,0.06);
     }
     .muted{ color: rgba(230,247,255,0.65); font-size:13px; margin-top:8px; text-align:center; cursor:pointer }
-
     /* MAIN SCREEN */
     #main-screen{ display:none; min-height:100vh; }
     .topbar{
@@ -70,9 +67,7 @@
       transition:transform .18s ease;
     }
     .gear:hover{ transform: rotate(14deg) scale(1.04); }
-
     .wrap{ max-width:1100px; margin:28px auto; padding:0 20px; }
-
     .upload-box{
       background: linear-gradient(180deg,#07121a,#06111a);
       border:1px solid rgba(0,234,255,0.04);
@@ -87,9 +82,7 @@
       border:1px dashed rgba(0,234,255,0.06); cursor:pointer; color:var(--neon);
     }
     .small{ font-size:13px; color:rgba(230,247,255,0.7) }
-
     .result{ margin-top:18px; padding:14px; border-radius:10px; background:var(--glass); color:#dffaff; }
-
     /* ADMIN PANEL modal */
     #admin-panel{
       display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;
@@ -102,18 +95,15 @@
     .admin-head{ display:flex; justify-content:space-between; align-items:center; gap:12px; }
     .admin-head h3{ margin:0; color:var(--neon) }
     .close { background:#ff6b6b; color:#fff; border:none; padding:8px 10px; border-radius:8px; cursor:pointer }
-
     .user-list{ margin-top:12px; max-height:260px; overflow:auto; }
     .user-row{ display:flex; justify-content:space-between; align-items:center; gap:10px; padding:8px; background:#08111a; border-radius:8px; margin-bottom:8px; border:1px solid rgba(255,255,255,0.02) }
     .user-row b{ color:#dffaff }
     .user-row button{ padding:6px 8px; border-radius:8px; border:none; cursor:pointer; background:var(--neon); color:#002028; font-weight:700 }
-
     /* small responsive */
     @media (max-width:720px){
       .upload-box{ flex-direction:column; align-items:stretch }
       .admin-card{ width:92% }
     }
-
   </style>
 </head>
 <body>
@@ -122,16 +112,13 @@
   <section id="login-screen">
     <div class="card" role="dialog" aria-labelledby="login-title">
       <h2 id="login-title">🔐 Acesse sua conta</h2>
-
       <label class="field"><input id="inputUser" placeholder="Usuário (ex: CLX)" autocomplete="username"></label>
       <label class="field"><input id="inputPass" type="password" placeholder="Senha" autocomplete="current-password"></label>
-
       <button class="btn" onclick="handleLogin()">Entrar</button>
       <div style="display:flex;gap:8px;margin-top:10px;justify-content:center">
         <div class="muted" onclick="preencherAdmin()">Usar credenciais Admin</div>
         <div class="muted" onclick="limparLocal()">Reset DB (avançado)</div>
       </div>
-
       <p style="font-size:13px;margin-top:12px;color:rgba(230,247,255,0.65);text-align:center">
         Usuário admin padrão: <b>CLX</b> — senha: <b>02072007</b>
       </p>
@@ -150,13 +137,11 @@
           <div style="font-size:12px;color:rgba(230,247,255,0.6)">Faça upload e organize seus arquivos</div>
         </div>
       </div>
-
       <div style="display:flex;gap:12px;align-items:center">
         <button id="gearBtn" class="gear" title="Painel Admin" onclick="openAdmin()" style="display:none">⚙️</button>
         <button class="btn" onclick="doLogout()" style="background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--neon)">Sair</button>
       </div>
     </div>
-
     <div class="wrap">
       <div class="upload-box" role="region" aria-label="Upload">
         <div class="upload-left">
@@ -166,7 +151,6 @@
             <div class="small">Suporta CSV, Excel (.xlsx/.xls), JSON, TSV, TXT</div>
           </div>
         </div>
-
         <div style="display:flex;gap:12px;align-items:center">
           <label class="file-input">
             <input id="fileInput" type="file" accept=".csv,.xlsx,.xls,.json,.txt,.tsv" style="display:none" />
@@ -175,7 +159,6 @@
           <button class="btn" onclick="handleProcess()">Processar</button>
         </div>
       </div>
-
       <div id="resultado" class="result" style="display:none"></div>
     </div>
   </main>
@@ -189,23 +172,17 @@
           <button class="close" onclick="closeAdmin()">Fechar</button>
         </div>
       </div>
-
       <p style="margin-top:8px;color:rgba(230,247,255,0.7)">Gerencie usuários. Apenas <strong>CLX</strong> pode abrir este painel.</p>
-
       <hr style="border-color:rgba(255,255,255,0.02);margin:12px 0">
-
       <strong>Usuários cadastrados</strong>
       <div class="user-list" id="userList"></div>
-
       <hr style="border-color:rgba(255,255,255,0.02);margin:12px 0">
-
       <strong>Criar novo usuário</strong>
       <div style="display:flex;gap:8px;margin-top:8px">
         <input id="newUser" class="input-dark" placeholder="nome de usuário">
         <input id="newPass" class="input-dark" placeholder="senha">
         <button class="btn" onclick="createUser()">Criar</button>
       </div>
-
       <div style="margin-top:12px;display:flex;gap:8px">
         <button class="btn" onclick="backupDB()">Fazer backup do DB</button>
         <button class="btn" onclick="exportDB()">Exportar JSON</button>
@@ -424,10 +401,8 @@ function showResult(name, data){
     <pre style="max-height:260px;overflow:auto;background:#06111a;border-radius:8px;padding:10px;margin-top:10px;border:1px solid rgba(255,255,255,0.02)">${escapeHtml(JSON.stringify(data.slice(0,30), null, 2))}${data.length>30?'\n\n... (mostrando 30 primeiros registros)':''}</pre>
   `;
 }
-
 /* small helper */
 function escapeHtml(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
 /* ---------- Auto-login if already logged ---------- */
 (function tryAutoLogin(){
   const logged = localStorage.getItem('logado');
