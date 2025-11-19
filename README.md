@@ -9,24 +9,119 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <style>
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; color: #000; }
-    /* LOGIN */
-    #login-screen { height: 100vh; display: flex; justify-content: center; align-items: center; background: #000; color: #0ff; }
-    #login-box { background: #0a0a0a; padding: 40px; border-radius: 15px; width: 300px; text-align: center; box-shadow: 0 0 20px #00f7ff; }
-    #login-box input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 8px; border: none; background: #111; color: #0ff; }
-    #login-box button { width: 95%; padding: 12px; margin-top: 10px; border-radius: 8px; border: none; background: #00eaff; color: #000; cursor: pointer; font-weight: bold; }
-    /* CONTAINER PRINCIPAL */
+    
+    /* LOGIN FULLSCREEN */
+    #login-screen {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #000;
+        color: #0ff;
+        z-index: 9999;
+    }
+    #login-box {
+        background: #0a0a0a;
+        padding: 60px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 0 40px #00f7ff;
+    }
+    #login-box h2 { margin-bottom: 20px; }
+    #login-box input {
+        width: 95%;
+        padding: 15px;
+        margin: 12px 0;
+        border-radius: 10px;
+        border: none;
+        background: #111;
+        color: #0ff;
+        font-size: 16px;
+    }
+    #login-box button {
+        width: 95%;
+        padding: 15px;
+        margin-top: 15px;
+        border-radius: 10px;
+        border: none;
+        background: #00eaff;
+        color: #000;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 16px;
+        transition: 0.2s;
+    }
+    #login-box button:hover { background: #09f; }
+
+    /* MAIN SCREEN */
     #main-screen { display: none; }
+
+    /* ADMIN BUTTON (ENGRENAGEM) */
+    .admin-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        font-size: 32px;
+        background: none;
+        border: none;
+        color: #00eaff;
+        cursor: pointer;
+        transition: 0.3s;
+        z-index: 1000;
+    }
+    .admin-btn:hover { transform: rotate(15deg); color: #09f; }
+
+    /* PAINEL ADMIN */
+    #admin-panel {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.95);
+        color: #0ff;
+        padding: 40px;
+        z-index: 2000;
+        overflow-y: auto;
+    }
+    .admin-box {
+        max-width: 600px;
+        margin: auto;
+        background: #0a0a0a;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px #0ff;
+    }
+    .admin-close {
+        float: right;
+        cursor: pointer;
+        font-size: 25px;
+        color: red;
+    }
 </style>
 </head>
 <body>
 
-<!-- TELA DE LOGIN -->
+<!-- LOGIN -->
 <div id="login-screen">
     <div id="login-box">
         <h2>🔐 Login</h2>
         <input id="user" placeholder="Usuário">
         <input id="pass" type="password" placeholder="Senha">
         <button onclick="login()">Entrar</button>
+    </div>
+</div>
+
+<!-- ADMIN BUTTON -->
+<button class="admin-btn" onclick="abrirAdmin()" id="admin-btn" style="display:none;">⚙️</button>
+
+<!-- PAINEL ADMIN -->
+<div id="admin-panel">
+    <div class="admin-box">
+        <span class="admin-close" onclick="fecharAdmin()">✖</span>
+        <h2>⚙️ Painel do Administrador</h2>
+        <p>Aqui você poderá adicionar as funções que desejar.</p>
     </div>
 </div>
 
@@ -102,10 +197,15 @@ function login() {
     if (u === "CLX" && p === "02072007") {
         document.getElementById("login-screen").style.display = "none";
         document.getElementById("main-screen").style.display = "block";
+        document.getElementById("admin-btn").style.display = "block"; // mostrar engrenagem
     } else {
         alert("Usuário ou senha incorretos!");
     }
 }
+
+/* ADMIN */
+function abrirAdmin() { document.getElementById("admin-panel").style.display = "block"; }
+function fecharAdmin() { document.getElementById("admin-panel").style.display = "none"; }
 
 /* CÓDIGO ORIGINAL DO ORGANIZADOR (mantido intacto) */
 let dadosOriginais = [];
@@ -131,7 +231,6 @@ function processarArquivo() {
     const file = document.getElementById("fileInput").files[0];
     if (!file) return alert("Selecione um arquivo primeiro!");
     const extensao = file.name.split(".").pop().toLowerCase();
-
     if (["csv","tsv","txt"].includes(extensao)) {
         Papa.parse(file,{header:true,skipEmptyLines:true,complete: results => { dadosOriginais = results.data; prepararOrganizacao(); }});
     } else if (["xlsx","xls"].includes(extensao)) {
